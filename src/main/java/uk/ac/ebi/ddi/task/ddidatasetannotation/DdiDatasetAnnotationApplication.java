@@ -12,10 +12,10 @@ import uk.ac.ebi.ddi.service.db.model.publication.PublicationDataset;
 import uk.ac.ebi.ddi.service.db.service.dataset.IDatasetService;
 import uk.ac.ebi.ddi.service.db.service.publication.IPublicationDatasetService;
 import uk.ac.ebi.ddi.service.db.utils.DatasetCategory;
+import uk.ac.ebi.ddi.service.db.utils.DatasetUtils;
 import uk.ac.ebi.ddi.task.ddidatasetannotation.configuration.DatasetAnnotationTaskProperties;
 import uk.ac.ebi.ddi.task.ddidatasetannotation.services.NCBITaxonomyService;
 import uk.ac.ebi.ddi.task.ddidatasetannotation.services.PubmedService;
-import uk.ac.ebi.ddi.task.ddidatasetannotation.utils.DatasetUtils;
 
 import java.util.*;
 
