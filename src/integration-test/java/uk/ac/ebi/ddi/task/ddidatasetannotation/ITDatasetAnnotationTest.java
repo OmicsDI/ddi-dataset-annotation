@@ -50,7 +50,7 @@ public class ITDatasetAnnotationTest {
 				" Siliques without withering flower organs were harvested. The experiment was performed twice" +
 				" providing independent biological replicates. This for testing only:  Libraries were prepared as " +
 				"described in DOI:10.1038/NMETH.1315. Each library");
-		
+
 		Map<String, Set<String>> dates = new HashMap<>();
 		dates.put("publication", Collections.singleton("2007-01-18"));
 		dates.put("updated", Collections.singleton("2014-05-01"));
@@ -65,6 +65,7 @@ public class ITDatasetAnnotationTest {
 		additional.put("submitter_keywords", Collections.singleton("transcription profiling by array"));
 		additional.put("full_dataset_link",
 				Collections.singleton("https://www.ebi.ac.uk/arrayexpress/experiments/E-ATMX-10"));
+		
 		additional.put("submitter_email", Collections.singleton("lhennig@ethz.ch"));
 		additional.put("repository", Collections.singleton("ArrayExpress"));
 		additional.put("sample_protocol", Collections.singleton("Growth Protocol - Plants were grown in growth " +
