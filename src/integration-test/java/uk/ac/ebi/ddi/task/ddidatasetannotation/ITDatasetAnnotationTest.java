@@ -25,7 +25,7 @@ import static uk.ac.ebi.ddi.ddidomaindb.dataset.DSField.Date.PUBLICATION;
 @ContextConfiguration(classes = DdiDatasetAnnotationApplication.class,
 		initializers = ConfigFileApplicationContextInitializer.class)
 @TestPropertySource(properties = {
-		"importer.database_name=ArrayExpress"
+		"annotation.database_name=ArrayExpress"
 })
 public class ITDatasetAnnotationTest {
 
