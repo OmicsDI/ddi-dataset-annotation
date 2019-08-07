@@ -18,10 +18,13 @@ import uk.ac.ebi.ddi.task.ddidatasetannotation.services.NCBITaxonomyService;
 import uk.ac.ebi.ddi.task.ddidatasetannotation.services.PubmedService;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static uk.ac.ebi.ddi.ddidomaindb.dataset.DSField.Additional.*;
 import static uk.ac.ebi.ddi.ddidomaindb.dataset.DSField.Date.PUBLICATION;
 import static uk.ac.ebi.ddi.ddidomaindb.dataset.DSField.Date.PUBLICATION_UPDATED;
+import static uk.ac.ebi.ddi.service.db.utils.DatasetCategory.INSERTED;
+import static uk.ac.ebi.ddi.service.db.utils.DatasetCategory.UPDATED;
 
 @SpringBootApplication
 public class DdiDatasetAnnotationApplication implements CommandLineRunner {
@@ -47,9 +50,18 @@ public class DdiDatasetAnnotationApplication implements CommandLineRunner {
         SpringApplication.run(DdiDatasetAnnotationApplication.class, args);
     }
 
+    public boolean isDatasetNeedToAnnotate(Dataset dataset) {
+        return dataset.getCurrentStatus().equals(INSERTED.getType())
+                || dataset.getCurrentStatus().equals(UPDATED.getType())
+                || taskProperties.isForce();
+    }
+
     @Override
     public void run(String... args) throws Exception {
-        List<Dataset> datasets = datasetService.readDatasetHashCode(taskProperties.getDatabaseName());
+        List<Dataset> datasets = datasetService.readDatasetHashCode(taskProperties.getDatabaseName())
+                .stream()
+                .filter(this::isDatasetNeedToAnnotate)
+                .collect(Collectors.toList());
         for (Dataset datasetShort : datasets) {
             try {
                 Dataset dataset = datasetService.read(datasetShort.getAccession(), datasetShort.getDatabase());
@@ -89,7 +101,7 @@ public class DdiDatasetAnnotationApplication implements CommandLineRunner {
         }
 
         if (!dataset.getCurrentStatus().equalsIgnoreCase(DatasetCategory.DELETED.getType())) {
-            dataset.setCurrentStatus(DatasetCategory.UPDATED.getType());
+            dataset.setCurrentStatus(DatasetCategory.ANNOTATED.getType());
         }
 
         datasetService.update(dataset.getId(), dataset);
