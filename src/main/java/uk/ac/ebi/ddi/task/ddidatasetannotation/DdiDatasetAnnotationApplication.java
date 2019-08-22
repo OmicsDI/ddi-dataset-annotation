@@ -62,18 +62,23 @@ public class DdiDatasetAnnotationApplication implements CommandLineRunner {
                 .stream()
                 .filter(this::isDatasetNeedToAnnotate)
                 .collect(Collectors.toList());
+        Collections.shuffle(datasets);  // For parallel computing
         for (Dataset datasetShort : datasets) {
             try {
-                Dataset dataset = datasetService.read(datasetShort.getAccession(), datasetShort.getDatabase());
-                process(dataset);
+                if (!isDatasetNeedToAnnotate(datasetShort)) {
+                    // We check this function once again to avoid repeat working on a same dataset
+                    // When running this in parallel
+                    return;
+                }
+                process(datasetShort);
             } catch (Exception e) {
                 LOGGER.error("Exception occurred when processing dataset {}, ", datasetShort.getAccession(), e);
             }
         }
     }
 
-    private void process(Dataset dataset) {
-
+    private void process(Dataset datasetShort) {
+        Dataset dataset = datasetService.read(datasetShort.getAccession(), datasetShort.getDatabase());
         if (DatasetUtils.hasDateType(dataset, PUBLICATION_UPDATED)) {
             dataset.getDates().put(PUBLICATION.getName(), DatasetUtils.getDateType(dataset, PUBLICATION_UPDATED));
         }
