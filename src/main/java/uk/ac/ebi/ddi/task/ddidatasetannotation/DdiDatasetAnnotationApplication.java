@@ -1,5 +1,6 @@
 package uk.ac.ebi.ddi.task.ddidatasetannotation;
 
+import com.mongodb.DuplicateKeyException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -114,9 +115,13 @@ public class DdiDatasetAnnotationApplication implements CommandLineRunner {
         Set<String> pubmeds = dataset.getCrossReference(DSField.CrossRef.PUBMED.key());
         for (String pubmedId : pubmeds) {
             //Todo: In the future we need to check for providers that have multiple omics already.
-            publicationService.save(new PublicationDataset(pubmedId, dataset.getAccession(), dataset.getDatabase(),
-                    dataset.getAdditionalField(DSField.Additional.OMICS.key()).iterator().next()
-            ));
+            try {
+                publicationService.save(new PublicationDataset(pubmedId, dataset.getAccession(), dataset.getDatabase(),
+                        dataset.getAdditionalField(DSField.Additional.OMICS.key()).iterator().next()
+                ));
+            } catch (DuplicateKeyException ignore) {
+                // Ignore if the pubmecId is already there
+            }
         }
     }
 }
